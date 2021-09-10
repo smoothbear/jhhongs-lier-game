@@ -29,7 +29,7 @@ public class RoomServiceImpl implements RoomService {
                 .orElseThrow(IllegalArgumentException::new)
                 .getSubject();
         Subject subject = subjects.get(RANDOM.nextInt(subjects.size()));
-        String code = UUID.randomUUID().toString().substring(10);
+        String code = UUID.randomUUID().toString().substring(0, 8);
         roomRepository.save(Room.builder()
                 .code(code)
                 .name(request.getName())
