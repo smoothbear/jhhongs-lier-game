@@ -28,7 +28,4 @@ public class Subject {
     @OneToMany(mappedBy = "subject")
     private List<Room> rooms;
 
-    @OneToMany(mappedBy = "subject")
-    private List<Member> members;
-
 }
