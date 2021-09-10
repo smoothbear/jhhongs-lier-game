@@ -7,6 +7,6 @@ import java.util.List;
 public interface RoomService {
     String createRoom(CreateRoomRequest request);
     List<String> members(String roomId);
-    void joinRoom(Long roomId, String username);
+    void joinRoom(String roomId, String username);
     void deleteRoom(Long id);
 }
