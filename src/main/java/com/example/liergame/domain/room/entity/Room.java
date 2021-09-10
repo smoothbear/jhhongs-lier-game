@@ -30,4 +30,6 @@ public class Room {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "room")
     private List<Member> member;
+
+    private boolean isStarted;
 }

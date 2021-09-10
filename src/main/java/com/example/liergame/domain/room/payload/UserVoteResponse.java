@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VoteResponse {
-    private Type type;
+public class UserVoteResponse {
 
-    private List<UserVoteResponse> userVoteResponseList;
+    private int count;
+
+    private String name;
+
 }

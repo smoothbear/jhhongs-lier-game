@@ -1,8 +1,6 @@
 package com.example.liergame.domain.room.controller;
 
-import com.example.liergame.domain.room.entity.Member;
-import com.example.liergame.domain.room.entity.Room;
-import com.example.liergame.domain.room.entity.RoomRepository;
+import com.example.liergame.domain.room.entity.*;
 import com.example.liergame.domain.room.payload.*;
 import com.example.liergame.domain.room.service.RoomService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,6 +25,7 @@ public class RoomController {
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate template;
     private final RoomRepository roomRepository;
+    private final MemberRepository memberRepository;
 
     @PostMapping("/room")
     public String createRoom(@RequestBody CreateRoomRequest request) {
@@ -51,18 +50,43 @@ public class RoomController {
                 .orElseThrow(IllegalArgumentException::new);
 
         List<Member> members = room.getMember();
+        members.get(0).setLier();
         Collections.shuffle(members);
         List<MemberResponse> memberResponses = members.stream()
-                .map(member -> new MemberResponse(member.getName(), room.getSubject().getSubject()))
+                .map(member -> {
+                    String subject = member.isLier() ? "lier" : room.getSubject().getSubject()
+                    return new MemberResponse(member.getName(), subject);
+                })
                 .collect(Collectors.toList());
         memberResponses.get(0).setSubject("lier");
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new StartResponse(Type.START, memberResponses)));
     }
 
     @MessageMapping("/vote/{roomId}")
-    public void startGame(@DestinationVariable String roomId,
-                          @Payload String name) throws JsonProcessingException {
-        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.START, name)));
+    public void vote(@DestinationVariable String roomId,
+                     @Payload String name) throws JsonProcessingException {
+        Room room = roomRepository.findByCode(roomId)
+                .orElseThrow(IllegalArgumentException::new);
+        room.getMember().stream()
+                .filter(member -> member.getName().equals(name))
+                .map(Member::addCount)
+                .map(memberRepository::save);
+        List<UserVoteResponse> userVoteResponseList = room.getMember()
+                .stream().map(member -> new UserVoteResponse(member.getCount(), member.getName()))
+                .collect(Collectors.toList());
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.START, userVoteResponseList)));
+    }
+
+    @MessageMapping("/game/finish/{roomId}")
+    public void finishGame(@DestinationVariable String roomId) throws JsonProcessingException {
+        Room room = roomRepository.findByCode(roomId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        List<Member> members = room.getMember();
+        members.sort(Collections.reverseOrder());
+        Member pointed = members.get(0);
+        String message = pointed.isLier() ? "시민 승리!" : "라이어 승리!";
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new GameSetMessage(message)));
     }
 
 }
