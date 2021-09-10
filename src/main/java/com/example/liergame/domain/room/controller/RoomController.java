@@ -32,14 +32,14 @@ public class RoomController {
     }
 
     @MessageMapping("/chatroom/{roomId}")
-    public void joinChatRoom(@DestinationVariable Long roomId,
+    public void joinChatRoom(@DestinationVariable String roomId,
                      @Payload String username) throws JsonProcessingException {
-        simpMessageSendingOperations.convertAndSend("/pub/game/" + roomId.toString(), objectMapper.writeValueAsString(new RoomResponse(Type.JOIN, username)));
+        simpMessageSendingOperations.convertAndSend("/pub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.JOIN, username)));
     }
 
     @MessageMapping("/game/{roomId}")
-    public void startGame(@DestinationVariable Long roomId) throws JsonProcessingException {
-        simpMessageSendingOperations.convertAndSend("/pub/game/" + roomId.toString(), objectMapper.writeValueAsString(new RoomResponse(Type.START, "start")));
+    public void startGame(@DestinationVariable String roomId) throws JsonProcessingException {
+        simpMessageSendingOperations.convertAndSend("/pub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.START, "start")));
     }
 
 }
