@@ -34,6 +34,7 @@ public class RoomController {
     @MessageMapping("/chatroom/{roomId}")
     public void joinChatRoom(@DestinationVariable String roomId,
                      @Payload String username) throws JsonProcessingException {
+        System.out.println(username);
         simpMessageSendingOperations.convertAndSend("/pub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.JOIN, username)));
     }
 
