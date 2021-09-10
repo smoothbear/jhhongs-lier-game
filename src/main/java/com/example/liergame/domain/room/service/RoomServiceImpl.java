@@ -51,9 +51,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void joinRoom(String roomId, String username) {
+        Room room = roomRepository.findByCode(roomId)
+                .orElseThrow(IllegalArgumentException::new);
+        memberRepository.findByRoomAndName(room, roomId)
+                        .ifPresent(member -> {throw new IllegalArgumentException();});
         memberRepository.save(Member.builder()
                 .name(username)
-                .room(roomRepository.findByCode(roomId).orElseThrow(IllegalArgumentException::new))
+                .room(room)
                 .subject(null)
                 .build());
     }
