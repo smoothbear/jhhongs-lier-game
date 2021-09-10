@@ -40,12 +40,12 @@ public class RoomController {
     public void joinChatRoom(@DestinationVariable String roomId,
                      @Payload String username) throws JsonProcessingException {
         roomService.joinRoom(roomId, username);
-        template.convertAndSend("/sub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.JOIN, username)));
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.JOIN, username)));
     }
 
     @MessageMapping("/game/{roomId}")
     public void startGame(@DestinationVariable String roomId) throws JsonProcessingException {
-        template.convertAndSend("/sub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.START, "start")));
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.START, "start")));
     }
 
 }
