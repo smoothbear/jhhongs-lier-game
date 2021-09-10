@@ -25,8 +25,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public String createRoom(CreateRoomRequest request) {
-        List<Subject> subjects = topicRepository.findByName(request.getName())
-                .orElseThrow(IllegalArgumentException::new).getSubject();
+        List<Subject> subjects = topicRepository.findByName(request.getTopic())
+                .orElseThrow(IllegalArgumentException::new)
+                .getSubject();
         Subject subject = subjects.get(RANDOM.nextInt(subjects.size()));
         String code = UUID.randomUUID().toString();
         roomRepository.save(Room.builder()
