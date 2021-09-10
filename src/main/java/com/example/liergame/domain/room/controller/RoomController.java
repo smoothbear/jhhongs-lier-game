@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class RoomController {
 
     private final RoomService roomService;
     private final ObjectMapper objectMapper;
-    private final SimpMessageSendingOperations simpMessageSendingOperations;
+    private final SimpMessagingTemplate template;
 
     @PostMapping("/room")
     public String createRoom(@RequestBody CreateRoomRequest request) {
@@ -39,12 +40,12 @@ public class RoomController {
     public void joinChatRoom(@DestinationVariable String roomId,
                      @Payload String username) throws JsonProcessingException {
         roomService.joinRoom(roomId, username);
-        simpMessageSendingOperations.convertAndSend("/pub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.JOIN, username)));
+        template.convertAndSend("/sub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.JOIN, username)));
     }
 
     @MessageMapping("/game/{roomId}")
     public void startGame(@DestinationVariable String roomId) throws JsonProcessingException {
-        simpMessageSendingOperations.convertAndSend("/pub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.START, "start")));
+        template.convertAndSend("/sub/game/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.START, "start")));
     }
 
 }
