@@ -54,7 +54,7 @@ public class RoomController {
         Collections.shuffle(members);
         List<MemberResponse> memberResponses = members.stream()
                 .map(member -> {
-                    String subject = member.isLier() ? "lier" : room.getSubject().getSubject()
+                    String subject = member.isLier() ? "lier" : room.getSubject().getSubject();
                     return new MemberResponse(member.getName(), subject);
                 })
                 .collect(Collectors.toList());
