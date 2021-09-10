@@ -59,4 +59,10 @@ public class RoomController {
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new StartResponse(Type.START, memberResponses)));
     }
 
+    @MessageMapping("/vote/{roomId}")
+    public void startGame(@DestinationVariable String roomId,
+                          @Payload String name) throws JsonProcessingException {
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.START, name)));
+    }
+
 }

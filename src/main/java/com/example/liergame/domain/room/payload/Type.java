@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum Type {
     JOIN("join"),
+    VOTE("vote"),
     START("start");
 
     private final String type;
