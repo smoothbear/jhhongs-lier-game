@@ -28,6 +28,6 @@ public class Room {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "room")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "room")
     private List<Member> member;
 }
