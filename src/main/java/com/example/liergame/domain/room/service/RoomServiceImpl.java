@@ -60,7 +60,6 @@ public class RoomServiceImpl implements RoomService {
         memberRepository.save(Member.builder()
                 .name(username)
                 .room(room)
-                .subject(null)
                 .build());
     }
 
