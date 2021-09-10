@@ -3,16 +3,15 @@ package com.example.liergame.domain.room.payload;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberResponse {
+public class StartResponse {
 
-    private String name;
+    private Type type;
 
-    @Setter
-    private String subject;
-
+    private List<MemberResponse> memberResponses;
 }

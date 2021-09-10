@@ -3,10 +3,7 @@ package com.example.liergame.domain.room.controller;
 import com.example.liergame.domain.room.entity.Member;
 import com.example.liergame.domain.room.entity.Room;
 import com.example.liergame.domain.room.entity.RoomRepository;
-import com.example.liergame.domain.room.payload.CreateRoomRequest;
-import com.example.liergame.domain.room.payload.MemberResponse;
-import com.example.liergame.domain.room.payload.RoomResponse;
-import com.example.liergame.domain.room.payload.Type;
+import com.example.liergame.domain.room.payload.*;
 import com.example.liergame.domain.room.service.RoomService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,10 +53,10 @@ public class RoomController {
         List<Member> members = room.getMember();
         Collections.shuffle(members);
         List<MemberResponse> memberResponses = members.stream()
-                .map(member -> new MemberResponse(Type.START, member.getName(), room.getSubject().getSubject()))
+                .map(member -> new MemberResponse(member.getName(), room.getSubject().getSubject()))
                 .collect(Collectors.toList());
         memberResponses.get(0).setSubject("lier");
-        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(memberResponses));
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new StartResponse(Type.START, memberResponses)));
     }
 
 }
