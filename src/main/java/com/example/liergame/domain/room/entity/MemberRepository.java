@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends CrudRepository<Member, Long> {
-    Optional<Member> findByRoomAndName(Room room, String name)
+    Optional<Member> findByRoomAndName(Room room, String name);
 }
