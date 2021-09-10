@@ -1,6 +1,10 @@
 package com.example.liergame.domain.room.controller;
 
+import com.example.liergame.domain.room.entity.Member;
+import com.example.liergame.domain.room.entity.Room;
+import com.example.liergame.domain.room.entity.RoomRepository;
 import com.example.liergame.domain.room.payload.CreateRoomRequest;
+import com.example.liergame.domain.room.payload.MemberResponse;
 import com.example.liergame.domain.room.payload.RoomResponse;
 import com.example.liergame.domain.room.payload.Type;
 import com.example.liergame.domain.room.service.RoomService;
@@ -10,12 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class RoomController {
     private final RoomService roomService;
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate template;
+    private final RoomRepository roomRepository;
 
     @PostMapping("/room")
     public String createRoom(@RequestBody CreateRoomRequest request) {
@@ -38,14 +43,23 @@ public class RoomController {
 
     @MessageMapping("/chatroom/{roomId}")
     public void joinChatRoom(@DestinationVariable String roomId,
-                     @Payload String username) throws JsonProcessingException {
+                             @Payload String username) throws JsonProcessingException {
         roomService.joinRoom(roomId, username);
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.JOIN, username)));
     }
 
     @MessageMapping("/game/{roomId}")
     public void startGame(@DestinationVariable String roomId) throws JsonProcessingException {
-        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new RoomResponse(Type.START, "start")));
+        Room room = roomRepository.findByCode(roomId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        List<Member> members = room.getMember();
+        Collections.shuffle(members);
+        List<MemberResponse> memberResponses = members.stream()
+                .map(member -> new MemberResponse(Type.START, member.getName(), room.getSubject().getSubject()))
+                .collect(Collectors.toList());
+        memberResponses.get(0).setSubject("lier");
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(memberResponses));
     }
 
 }
