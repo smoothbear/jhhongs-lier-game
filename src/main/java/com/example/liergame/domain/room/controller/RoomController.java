@@ -106,14 +106,16 @@ public class RoomController {
         Integer mostVote = members.stream()
                 .map(member -> member.getVoted().size())
                 .sorted()
-                .collect(Collectors.toList()).get(0);
+                .collect(Collectors.toList()).get(members.size() - 1);
         System.out.println("MostSize: " + mostVote);
         Member dier = members.stream().filter(member -> member.getVoted().size() == mostVote).findFirst().orElseThrow(IllegalArgumentException::new);
 
         System.out.println(dier.getName());
         String message = dier.isLier() ? "lier" : "user";
         room.getMember().forEach(voteRepository::deleteAllByMember);
+        System.out.println("삭제 준비");
         memberRepository.deleteAllByRoom(room);
+        System.out.println("삭제 실행");
         List<Subject> subjects = room.getSubject().getTopic().getSubject();
         Subject subject = subjects.get(RANDOM.nextInt(subjects.size()));
         room.setSubject(subject);
