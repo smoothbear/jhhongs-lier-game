@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface MemberRepository extends CrudRepository<Member, Long> {
     Optional<Member> findByRoomAndName(Room room, String name);
     Member findFirstByRoomOrderByVoted(Room room);
+    void deleteAllByRoom(Room room);
 }

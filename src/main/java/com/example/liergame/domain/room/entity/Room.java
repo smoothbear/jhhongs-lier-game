@@ -24,11 +24,11 @@ public class Room {
 
     private String code;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "room")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "room", cascade = CascadeType.REMOVE)
     private List<Member> member;
 
     private boolean isStarted;

@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,14 +89,15 @@ public class RoomController {
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.VOTE, userVoteResponseList)));
     }
 
+    @Transactional
     @MessageMapping("/game/finish/{roomId}")
     public void finishGame(@DestinationVariable String roomId) throws JsonProcessingException {
         Room room = roomRepository.findByCode(roomId)
                 .orElseThrow(IllegalArgumentException::new);
 
         Member dier = memberRepository.findFirstByRoomOrderByVoted(room);
-        System.out.println(dier.getName());
         String message = dier.isLier() ? "lier" : "user";
+        memberRepository.deleteAllByRoom(room);
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteEndResponse(Type.VOTE_END, message)));
     }
 
