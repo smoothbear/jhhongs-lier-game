@@ -12,6 +12,5 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
     Optional<Member> findByRoomAndName(Room room, String name);
     Member findTopByRoomOrderByVoted(Room room);
 
-    @Query(value = "delete from Member where Member.room = ?1")
     void deleteAllByRoom(Room room);
 }
