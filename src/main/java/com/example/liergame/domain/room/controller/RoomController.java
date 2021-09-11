@@ -101,8 +101,14 @@ public class RoomController {
         Room room = roomRepository.findByCode(roomId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        Member dier = memberRepository.findFirst(room).get(0);
-        System.out.println(dier.getName());
+        List<Member> members = room.getMember();
+
+        Integer mostVote = members.stream()
+                .map(member -> member.getVoted().size())
+                .sorted()
+                .collect(Collectors.toList()).get(members.size() - 1);
+        Member dier = members.stream().filter(member -> member.getVoted().size() == mostVote).findFirst().orElseThrow(IllegalArgumentException::new);
+
         String message = dier.isLier() ? "lier" : "user";
         room.getMember().forEach(voteRepository::deleteAllByMember);
         memberRepository.deleteAllByRoom(room);
