@@ -95,6 +95,7 @@ public class RoomController {
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.VOTE, userVoteResponseList)));
     }
 
+    @Transactional
     @MessageMapping("/game/finish/{roomId}")
     public void finishGame(@DestinationVariable String roomId) throws JsonProcessingException {
         Room room = roomRepository.findByCode(roomId)
@@ -117,7 +118,6 @@ public class RoomController {
         System.out.println(dier.getName() + " : " + dier.isLier());
         String message = dier.isLier() ? "user" : "lier";
         room.getMember().forEach(voteRepository::deleteAllByMember);
-        memberRepository.deleteAllByRoom(room);
         List<Subject> subjects = room.getSubject().getTopic().getSubject();
         Subject subject = subjects.get(RANDOM.nextInt(subjects.size()));
         room.setSubject(subject);
