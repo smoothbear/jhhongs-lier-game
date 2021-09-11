@@ -94,7 +94,7 @@ public class RoomController {
                 .orElseThrow(IllegalArgumentException::new);
 
         Member dier = memberRepository.findFirstByRoomOrderByVoted(room);
-        String message = dier.isLier() ? "시민 승리!" : "라이어 승리!";
+        String message = dier.isLier() ? "lier" : "win";
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new GameSetMessage(message)));
     }
 

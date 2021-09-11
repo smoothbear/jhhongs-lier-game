@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface TopicService {
     TopicResponse getTopics();
+    List<String> getSubjects(String roomId);
 }
