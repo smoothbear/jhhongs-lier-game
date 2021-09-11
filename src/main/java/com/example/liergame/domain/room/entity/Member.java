@@ -29,8 +29,14 @@ public class Member implements Comparable<Member> {
 
     private boolean isLier;
 
+    private boolean isVoted;
+
     public void setLier() {
         isLier = true;
+    }
+    public Member setVoted() {
+        this.isVoted = true;
+        return this;
     }
     public Member addCount() {
         this.count += 1;

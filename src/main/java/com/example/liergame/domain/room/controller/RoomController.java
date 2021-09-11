@@ -64,13 +64,19 @@ public class RoomController {
 
     @MessageMapping("/vote/{roomId}")
     public void vote(@DestinationVariable String roomId,
-                     @Payload String name) throws JsonProcessingException {
+                     @Payload VoteRequest request) throws JsonProcessingException {
         Room room = roomRepository.findByCode(roomId)
                 .orElseThrow(IllegalArgumentException::new);
+        Member member = memberRepository.findByRoomAndName(room, request.getUsername()).orElseThrow(IllegalArgumentException::new);
+
+        if(member.isVoted()) {
+            return;
+        }
         room.getMember().stream()
-                .filter(member -> member.getName().equals(name))
+                .filter(member -> member.getName().equals(request.getSuspendName()))
                 .map(Member::addCount)
                 .map(memberRepository::save);
+        memberRepository.save(member.setVoted());
         List<UserVoteResponse> userVoteResponseList = room.getMember()
                 .stream().map(member -> new UserVoteResponse(member.getCount(), member.getName()))
                 .collect(Collectors.toList());
