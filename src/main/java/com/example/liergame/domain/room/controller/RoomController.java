@@ -117,6 +117,7 @@ public class RoomController {
 
         System.out.println(dier.getName());
         String message = dier.isLier() ? "lier" : "user";
+        System.out.println(message);
         room.getMember().forEach(voteRepository::deleteAllByMember);
         System.out.println("삭제 준비");
         memberRepository.deleteAllByRoom(room);
