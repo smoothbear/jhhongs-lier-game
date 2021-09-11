@@ -115,11 +115,9 @@ public class RoomController {
                 })
                 .findFirst().orElseThrow(IllegalArgumentException::new);
 
-        System.out.println(dier.getName());
+        System.out.println(dier.getName() + " : " + dier.isLier());
         String message = dier.isLier() ? "lier" : "user";
-        System.out.println(message);
         room.getMember().forEach(voteRepository::deleteAllByMember);
-        System.out.println("삭제 준비");
         memberRepository.deleteAllByRoom(room);
         System.out.println("삭제 실행");
         List<Subject> subjects = room.getSubject().getTopic().getSubject();

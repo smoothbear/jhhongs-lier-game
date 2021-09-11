@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface MemberRepository extends CrudRepository<Member, Long> {
     Optional<Member> findByRoomAndName(Room room, String name);
     Member findTopByRoomOrderByVoted(Room room);
-    @Query(value = "select count(name) cnt from vote inner join member on vote.voted_name = member.id where room_id=?1 group by name order by cnt desc limit 1", nativeQuery = true)
 
+    @Query(value = "delete from Member where Member.room = ?1")
     void deleteAllByRoom(Room room);
 }
