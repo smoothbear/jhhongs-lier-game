@@ -67,16 +67,16 @@ public class RoomController {
                      @Payload VoteRequest request) throws JsonProcessingException {
         Room room = roomRepository.findByCode(roomId)
                 .orElseThrow(IllegalArgumentException::new);
-        Member member = memberRepository.findByRoomAndName(room, request.getUsername()).orElseThrow(IllegalArgumentException::new);
+        Member sender = memberRepository.findByRoomAndName(room, request.getUsername()).orElseThrow(IllegalArgumentException::new);
 
-        if(member.isVoted()) {
+        if(sender.isVoted()) {
             return;
         }
         room.getMember().stream()
                 .filter(member -> member.getName().equals(request.getSuspendName()))
                 .map(Member::addCount)
                 .map(memberRepository::save);
-        memberRepository.save(member.setVoted());
+        memberRepository.save(sender.setVoted());
         List<UserVoteResponse> userVoteResponseList = room.getMember()
                 .stream().map(member -> new UserVoteResponse(member.getCount(), member.getName()))
                 .collect(Collectors.toList());
