@@ -98,4 +98,12 @@ public class RoomController {
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new GameSetMessage(message)));
     }
 
+    @MessageMapping("/game/lier/{roomId}")
+    public void lierMatch(@DestinationVariable String roomId,
+                          String subject) {
+        Room room = roomRepository.findByCode(roomId)
+                .orElseThrow(IllegalArgumentException::new);
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.createObjectNode().put("isMatch", subject.equals(room.getSubject().getSubject())));
+    }
+
 }
