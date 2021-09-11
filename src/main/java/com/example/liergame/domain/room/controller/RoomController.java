@@ -79,7 +79,7 @@ public class RoomController {
         List<UserVoteResponse> userVoteResponseList = room.getMember()
                 .stream().map(member -> new UserVoteResponse(member.getCount(), member.getName()))
                 .collect(Collectors.toList());
-        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.START, userVoteResponseList)));
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.VOTE, userVoteResponseList)));
     }
 
     @MessageMapping("/game/finish/{roomId}")
