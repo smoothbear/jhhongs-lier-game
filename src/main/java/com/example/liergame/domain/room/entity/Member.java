@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Member implements Comparable<Member> {
+public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,26 +25,10 @@ public class Member implements Comparable<Member> {
     @JoinColumn(name = "room_id")
     private Room room;
 
-    private int count;
-
     private boolean isLier;
-
-    private boolean isVoted;
 
     public void setLier() {
         isLier = true;
     }
-    public Member setVoted() {
-        this.isVoted = true;
-        return this;
-    }
-    public Member addCount() {
-        this.count += 1;
-        return this;
-    }
 
-    @Override
-    public int compareTo(Member o) {
-        return o.count - count;
-    }
 }

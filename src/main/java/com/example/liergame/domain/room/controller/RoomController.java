@@ -26,6 +26,7 @@ public class RoomController {
     private final SimpMessagingTemplate template;
     private final RoomRepository roomRepository;
     private final MemberRepository memberRepository;
+    private final VoteRepository voteRepository;
 
     @PostMapping("/room")
     public String createRoom(@RequestBody CreateRoomRequest request) {
@@ -68,17 +69,12 @@ public class RoomController {
                 .orElseThrow(IllegalArgumentException::new);
         Member sender = memberRepository.findByRoomAndName(room, request.getUsername()).orElseThrow(IllegalArgumentException::new);
 
-        if(sender.isVoted()) {
-            return;
-        }
         room.getMember().stream()
-                .filter(member -> member.getName().equals(request.getSuspendName()))
-                .map(Member::addCount)
-                .map(memberRepository::save);
-        memberRepository.save(sender.setVoted());
-        System.out.println("hi");
+                .filter(member -> member.getName().equals(request.getUsername()))
+                .map(member -> voteRepository.save(new Vote(null, sender, member)));
         List<UserVoteResponse> userVoteResponseList = room.getMember()
-                .stream().map(member -> new UserVoteResponse(member.getCount(), member.getName()))
+                .stream()
+                .map(member -> new UserVoteResponse(voteRepository.countVoteByMember(member).intValue(), member.getName()))
                 .collect(Collectors.toList());
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.VOTE, userVoteResponseList)));
     }
