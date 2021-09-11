@@ -27,6 +27,9 @@ public class Member {
 
     private boolean isLier;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "votedMember")
+    private List<Vote> voted;
+
     public void setLier() {
         isLier = true;
     }

@@ -84,10 +84,8 @@ public class RoomController {
         Room room = roomRepository.findByCode(roomId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        List<Member> members = room.getMember();
-        members.sort(Collections.reverseOrder());
-        Member pointed = members.get(0);
-        String message = pointed.isLier() ? "시민 승리!" : "라이어 승리!";
+        Member dier = memberRepository.findFirstByRoomOrderByVoted(room);
+        String message = dier.isLier() ? "시민 승리!" : "라이어 승리!";
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new GameSetMessage(message)));
     }
 
