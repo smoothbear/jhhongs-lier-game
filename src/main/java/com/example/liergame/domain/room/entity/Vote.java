@@ -22,4 +22,9 @@ public class Vote {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voted_name")
     private Member votedMember;
+
+    public Vote setVotedMember(Member member) {
+        this.votedMember = member;
+        return this;
+    }
 }

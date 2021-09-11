@@ -71,7 +71,15 @@ public class RoomController {
         Member sender = memberRepository.findByRoomAndName(room, request.getUsername()).orElseThrow(IllegalArgumentException::new);
         room.getMember().stream()
                 .filter(member -> member.getName().equals(request.getUsername()))
-                .map(member -> voteRepository.save(new Vote(null, sender, member)))
+                .map(member -> {
+                    voteRepository.findByMember(sender)
+                            .ifPresentOrElse(vote -> {
+                                        vote.setVotedMember(member);
+                                        voteRepository.save(vote);
+                                    },
+                                    () -> voteRepository.save(new Vote(null, sender, member)));
+                    return member;
+                })
                 .collect(Collectors.toList());
         List<UserVoteResponse> userVoteResponseList = room.getMember()
                 .stream()
