@@ -95,7 +95,7 @@ public class RoomController {
 
         Member dier = memberRepository.findFirstByRoomOrderByVoted(room);
         String message = dier.isLier() ? "lier" : "user";
-        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new GameSetMessage(message)));
+        template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteEndResponse(Type.VOTE_END, message)));
     }
 
     @MessageMapping("/game/lier/{roomId}")

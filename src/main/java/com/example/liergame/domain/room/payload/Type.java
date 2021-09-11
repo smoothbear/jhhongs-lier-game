@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum Type {
     JOIN("join"),
     VOTE("vote"),
-    START("start");
+    START("start"),
+    VOTE_END("vote_result");
 
     private final String type;
 }
