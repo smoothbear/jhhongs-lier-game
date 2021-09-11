@@ -51,9 +51,9 @@ public class RoomController {
                 .orElseThrow(IllegalArgumentException::new);
 
         List<Member> members = room.getMember();
+        Collections.shuffle(members);
         members.get(0).setLier();
         memberRepository.save(members.get(0));
-        Collections.shuffle(members);
         List<MemberResponse> memberResponses = members.stream()
                 .map(member -> {
                     String subject = member.isLier() ? "lier" : room.getSubject().getSubject();
