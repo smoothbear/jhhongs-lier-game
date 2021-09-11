@@ -30,8 +30,9 @@ public class Member {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "votedMember", cascade = CascadeType.REMOVE)
     private List<Vote> voted;
 
-    public void setLier() {
-        isLier = true;
+    public Member setLier(boolean isLier) {
+        this.isLier = isLier;
+        return this;
     }
 
 }

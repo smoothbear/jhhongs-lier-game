@@ -55,8 +55,11 @@ public class RoomController {
                 .orElseThrow(IllegalArgumentException::new);
 
         List<Member> members = room.getMember();
+        List<Member> updatedMembers = members.stream().map(member -> member.setLier(false))
+                .collect(Collectors.toList());
+        memberRepository.saveAll(updatedMembers);
         Collections.shuffle(members);
-        members.get(0).setLier();
+        members.get(0).setLier(true);
         memberRepository.save(members.get(0));
         List<MemberResponse> memberResponses = members.stream()
                 .map(member -> {
