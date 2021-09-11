@@ -69,11 +69,10 @@ public class RoomController {
         Room room = roomRepository.findByCode(roomId)
                 .orElseThrow(IllegalArgumentException::new);
         Member sender = memberRepository.findByRoomAndName(room, request.getUsername()).orElseThrow(IllegalArgumentException::new);
-        System.out.println("hellooolololo");
         room.getMember().stream()
                 .filter(member -> member.getName().equals(request.getUsername()))
-                .map(member -> voteRepository.save(new Vote(null, sender, member)));
-        System.out.println("hihihihihi");
+                .map(member -> voteRepository.save(new Vote(null, sender, member)))
+                .collect(Collectors.toList());
         List<UserVoteResponse> userVoteResponseList = room.getMember()
                 .stream()
                 .map(member -> new UserVoteResponse(voteRepository.countVoteByMember(member).intValue(), member.getName()))
