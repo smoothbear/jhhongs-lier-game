@@ -3,6 +3,7 @@ package com.example.liergame.domain.room.controller;
 import com.example.liergame.domain.room.entity.*;
 import com.example.liergame.domain.room.payload.*;
 import com.example.liergame.domain.room.service.RoomService;
+import com.example.liergame.domain.topic.entity.Subject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class RoomController {
 
     private final RoomService roomService;
+    private final Random RANDOM = new Random();
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate template;
     private final RoomRepository roomRepository;
@@ -96,9 +99,14 @@ public class RoomController {
                 .orElseThrow(IllegalArgumentException::new);
 
         Member dier = memberRepository.findFirstByRoomOrderByVoted(room);
+        System.out.println(dier.getName());
         String message = dier.isLier() ? "lier" : "user";
         room.getMember().forEach(voteRepository::deleteAllByMember);
         memberRepository.deleteAllByRoom(room);
+        List<Subject> subjects = room.getSubject().getTopic().getSubject();
+        Subject subject = subjects.get(RANDOM.nextInt(subjects.size()));
+        room.setSubject(subject);
+        roomRepository.save(room);
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteEndResponse(Type.VOTE_END, message)));
     }
 

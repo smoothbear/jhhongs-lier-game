@@ -32,4 +32,9 @@ public class Room {
     private List<Member> member;
 
     private boolean isStarted;
+
+    public Room setSubject(Subject subject) {
+        this.subject = subject;
+        return this;
+    }
 }
