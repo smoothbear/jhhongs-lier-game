@@ -27,11 +27,9 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public List<String> getSubjects(String roomId) {
+    public String getSubjects(String roomId) {
         Room room = roomRepository.findByCode(roomId)
                 .orElseThrow(IllegalAccessError::new);
-        return room.getSubject().getTopic().getSubject()
-                .stream().map(Subject::getSubject)
-                .collect(Collectors.toList());
+        return room.getSubject().getSubject();
     }
 }

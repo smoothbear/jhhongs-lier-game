@@ -23,7 +23,7 @@ public class TopicController {
     }
 
     @GetMapping("/subject/{roomId}")
-    public List<String> getSubjects(@PathVariable String roomId) {
+    public String getSubjects(@PathVariable String roomId) {
         return topicService.getSubjects(roomId);
     }
 
