@@ -30,6 +30,6 @@ public class TopicServiceImpl implements TopicService {
     public String getSubjects(String roomId) {
         Room room = roomRepository.findByCode(roomId)
                 .orElseThrow(IllegalAccessError::new);
-        return room.getSubject().getSubject();
+        return room.getSubject().getTopic().getName();
     }
 }
