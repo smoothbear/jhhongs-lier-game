@@ -76,6 +76,7 @@ public class RoomController {
                 .map(Member::addCount)
                 .map(memberRepository::save);
         memberRepository.save(sender.setVoted());
+        System.out.println("hi");
         List<UserVoteResponse> userVoteResponseList = room.getMember()
                 .stream().map(member -> new UserVoteResponse(member.getCount(), member.getName()))
                 .collect(Collectors.toList());
