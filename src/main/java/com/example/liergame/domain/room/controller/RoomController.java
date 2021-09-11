@@ -83,7 +83,7 @@ public class RoomController {
                 .collect(Collectors.toList());
         List<UserVoteResponse> userVoteResponseList = room.getMember()
                 .stream()
-                .map(member -> new UserVoteResponse(voteRepository.countVoteByMember(member).intValue(), member.getName()))
+                .map(member -> new UserVoteResponse(voteRepository.countVoteByVotedMember(member).intValue(), member.getName()))
                 .collect(Collectors.toList());
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteResponse(Type.VOTE, userVoteResponseList)));
     }
