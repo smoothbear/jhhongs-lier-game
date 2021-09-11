@@ -70,7 +70,7 @@ public class RoomController {
                 .orElseThrow(IllegalArgumentException::new);
         Member sender = memberRepository.findByRoomAndName(room, request.getUsername()).orElseThrow(IllegalArgumentException::new);
         room.getMember().stream()
-                .filter(member -> member.getName().equals(request.getUsername()))
+                .filter(member -> member.getName().equals(request.getSuspendName()))
                 .map(member -> {
                     voteRepository.findByMember(sender)
                             .ifPresentOrElse(vote -> {
