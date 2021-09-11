@@ -97,6 +97,7 @@ public class RoomController {
 
         Member dier = memberRepository.findFirstByRoomOrderByVoted(room);
         String message = dier.isLier() ? "lier" : "user";
+        room.getMember().forEach(voteRepository::deleteAllByMember);
         memberRepository.deleteAllByRoom(room);
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteEndResponse(Type.VOTE_END, message)));
     }
