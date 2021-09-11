@@ -94,6 +94,7 @@ public class RoomController {
                 .orElseThrow(IllegalArgumentException::new);
 
         Member dier = memberRepository.findFirstByRoomOrderByVoted(room);
+        System.out.println(dier.getName());
         String message = dier.isLier() ? "lier" : "user";
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new VoteEndResponse(Type.VOTE_END, message)));
     }
