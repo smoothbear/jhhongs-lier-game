@@ -58,7 +58,6 @@ public class RoomController {
                     return new MemberResponse(member.getName(), subject);
                 })
                 .collect(Collectors.toList());
-        memberResponses.get(0).setSubject("lier");
         template.convertAndSend("/sub/chatroom/" + roomId, objectMapper.writeValueAsString(new StartResponse(Type.START, memberResponses)));
     }
 
